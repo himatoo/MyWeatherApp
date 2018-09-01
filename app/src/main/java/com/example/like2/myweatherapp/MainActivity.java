@@ -3,17 +3,19 @@ package com.example.like2.myweatherapp;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements WeatherRecyclerAdapter.ListitemclickListner {
 
 
     ProgressBar progressBar;
@@ -27,7 +29,12 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.loading_indicator);
         setSupportActionBar(toolbar);
         recyclerView = findViewById(R.id.rec1);
-        adapter = new WeatherRecyclerAdapter(new ArrayList<WeatherDataModel>());
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager ln = new LinearLayoutManager(this);
+        ln.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(ln);
+        adapter = new WeatherRecyclerAdapter(new ArrayList<WeatherDataModel>(), this);
+        recyclerView.setAdapter(adapter);
 
     }
 
@@ -47,10 +54,17 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            new networktask().execute();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onListitemclick(int index) {
+        Toast.makeText(this, "item # " + index, Toast.LENGTH_SHORT).show();
+
     }
 
     class networktask extends AsyncTask<Void, Void, List<WeatherDataModel>> {
@@ -73,8 +87,10 @@ public class MainActivity extends AppCompatActivity {
             adapter.dataModels.clear();
             if (weatherDataModels != null && !weatherDataModels.isEmpty()) {
                 adapter.dataModels = weatherDataModels;
+                adapter.notifyDataSetChanged();
             }
         }
     }
+
 }
 
