@@ -18,7 +18,7 @@ public final class NetworkUtils {
     public static void Fetchdata()
     {
         URL url=CreateURL();
-        String jsonresponse=null;
+        String jsonresponse;
         jsonresponse=MakeHttpsRequest(url);
         ExtractfromJson(jsonresponse);
     }
@@ -72,7 +72,7 @@ public final class NetworkUtils {
 
     private static String ReadfromStream(InputStream stream) {
         StringBuilder stringBuilder=new StringBuilder();
-        String line=null;
+        String line;
         InputStreamReader reader=new InputStreamReader(stream);
         BufferedReader bufferedReader=new BufferedReader(reader);
         try {
