@@ -10,17 +10,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
 
 public final class NetworkUtils {
     private static final String Baseurl="https://andfun-weather.udacity.com/weather";
-    public static void Fetchdata()
+
+    public static List<WeatherDataModel> Fetchdata()
     {
         URL url=CreateURL();
         String jsonresponse;
         jsonresponse=MakeHttpsRequest(url);
-        ExtractfromJson(jsonresponse);
+        return ExtractfromJson(jsonresponse);
     }
     private static URL CreateURL()
     {
@@ -69,7 +71,6 @@ public final class NetworkUtils {
         return jsonResponse;
 
     }
-
     private static String ReadfromStream(InputStream stream) {
         StringBuilder stringBuilder=new StringBuilder();
         String line;
@@ -88,8 +89,9 @@ public final class NetworkUtils {
         return stringBuilder.toString();
     }
 
-    private static void ExtractfromJson(String response)
+    private static List<WeatherDataModel> ExtractfromJson(String response)
     {
+        List<WeatherDataModel> dataModels = new ArrayList<>();
         try {
             JSONObject root=new JSONObject(response);
             JSONObject city=root.optJSONObject("city");
@@ -111,11 +113,14 @@ public final class NetworkUtils {
                 Double cloud=weather.optJSONObject(i).optDouble("clouds");
                 JSONArray weth=weather.optJSONObject(i).optJSONArray("weather");
                 String description=weth.optJSONObject(0).optString("main");
+                dataModels.add(new WeatherDataModel(cityname, country, date, tday, tmax, tmin, tmor, tnight, presure, humidity, speed, cloud, description));
+
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return dataModels;
     }
 
 }

@@ -7,8 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecyclerAdapter.WeatherView>{
-    public WeatherRecyclerAdapter() {
+    List<WeatherDataModel> dataModels;
+
+    public WeatherRecyclerAdapter(List<WeatherDataModel> list) {
+        dataModels = list;
     }
     @NonNull
     @Override
@@ -19,14 +24,14 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecycler
     @Override
     public void onBindViewHolder(@NonNull WeatherView weatherView, int i) {
 
-        weatherView.textView.setText("");
+        weatherView.textView.setText(dataModels.get(i).getWeather());
 
 
 
     }
     @Override
     public int getItemCount() {
-        return 0;
+        return dataModels.size();
     }
     class WeatherView extends RecyclerView.ViewHolder {
         TextView textView;
