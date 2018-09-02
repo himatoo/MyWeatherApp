@@ -1,5 +1,6 @@
 package com.example.like2.myweatherapp;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +63,11 @@ public class MainActivity extends AppCompatActivity implements WeatherRecyclerAd
 
     @Override
     public void onListitemclick(int index) {
-        Toast.makeText(this, "item # " + index, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "item # " + index, Toast.LENGTH_SHORT).show();
+        WeatherDataModel data = adapter.dataModels.get(index);
+        Intent intent = new Intent(this, DetailsActivity.class);
+        intent.putExtra("weather", data.getWeather());
+        startActivity(intent);
 
     }
 
