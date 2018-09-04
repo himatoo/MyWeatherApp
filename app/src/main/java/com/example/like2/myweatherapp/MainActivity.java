@@ -1,26 +1,31 @@
 package com.example.like2.myweatherapp;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements WeatherRecyclerAdapter.ListitemclickListner {
+public class MainActivity extends AppCompatActivity implements WeatherRecyclerAdapter.ListitemclickListner, LoaderManager.LoaderCallbacks<List<WeatherDataModel>> {
 
 
     ProgressBar progressBar;
     WeatherRecyclerAdapter adapter;
     RecyclerView recyclerView;
+    private static final int loader_id = 1;
+    LoaderManager loaderManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,11 +35,12 @@ public class MainActivity extends AppCompatActivity implements WeatherRecyclerAd
         setSupportActionBar(toolbar);
         recyclerView = findViewById(R.id.rec1);
         recyclerView.setHasFixedSize(true);
-        LinearLayoutManager ln = new LinearLayoutManager(this);
-        ln.setOrientation(LinearLayoutManager.VERTICAL);
+        LinearLayoutManager ln = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(ln);
         adapter = new WeatherRecyclerAdapter(new ArrayList<WeatherDataModel>(), this);
         recyclerView.setAdapter(adapter);
+
+        //loaderManager.initLoader(loader_id, null, this);
 
     }
 
@@ -54,7 +60,14 @@ public class MainActivity extends AppCompatActivity implements WeatherRecyclerAd
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            new networktask().execute();
+            progressBar.setVisibility(View.VISIBLE);
+            loaderManager = getSupportLoaderManager();
+            Loader<List<WeatherDataModel>> loader = loaderManager.getLoader(loader_id);
+            if (loader == null) {
+                loaderManager.initLoader(loader_id, null, this);
+            } else {
+                loaderManager.restartLoader(loader_id, null, this);
+            }
             return true;
         }
 
@@ -64,14 +77,45 @@ public class MainActivity extends AppCompatActivity implements WeatherRecyclerAd
     @Override
     public void onListitemclick(int index) {
         // Toast.makeText(this, "item # " + index, Toast.LENGTH_SHORT).show();
+
         WeatherDataModel data = adapter.dataModels.get(index);
         Intent intent = new Intent(this, DetailsActivity.class);
         intent.putExtra("weather", data.getWeather());
         startActivity(intent);
 
+
     }
 
-    class networktask extends AsyncTask<Void, Void, List<WeatherDataModel>> {
+    @NonNull
+    @Override
+    public Loader<List<WeatherDataModel>> onCreateLoader(int id, @Nullable Bundle args) {
+        Log.d("LOADERRR", "onLoaderCreate");
+        return new MainLoader(this);
+
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<List<WeatherDataModel>> loader, List<WeatherDataModel> data) {
+
+        progressBar.setVisibility(View.INVISIBLE);
+        adapter.dataModels.clear();
+        if (data != null && !data.isEmpty()) {
+            adapter.dataModels = data;
+            adapter.notifyDataSetChanged();
+        }
+        Log.d("LOADERRR", "onLoaderfinshed");
+
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<List<WeatherDataModel>> loader) {
+       /*adapter.dataModels.clear();
+       adapter.notifyDataSetChanged();*/
+        Log.d("LOADERRR", "onLoaderReset");
+
+    }
+
+   /* class networktask extends AsyncTask<Void, Void, List<WeatherDataModel>> {
 
         @Override
         protected List<WeatherDataModel> doInBackground(Void... voids) {
@@ -94,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements WeatherRecyclerAd
                 adapter.notifyDataSetChanged();
             }
         }
-    }
+    }*/
 
 }
 

@@ -7,13 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecyclerAdapter.WeatherView>{
     List<WeatherDataModel> dataModels;
     private final ListitemclickListner listner;
 
-    public WeatherRecyclerAdapter(List<WeatherDataModel> list, ListitemclickListner listner1) {
+    WeatherRecyclerAdapter(List<WeatherDataModel> list, ListitemclickListner listner1) {
         dataModels = list;
         listner = listner1;
     }
@@ -26,7 +27,9 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecycler
     @Override
     public void onBindViewHolder(@NonNull WeatherView weatherView, int i) {
 
+
         weatherView.textView.setText(dataModels.get(i).getWeather());
+
     }
     @Override
     public int getItemCount() {
@@ -40,7 +43,7 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecycler
     class WeatherView extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView textView;
 
-        public WeatherView(@NonNull View itemView) {
+        WeatherView(@NonNull View itemView) {
             super(itemView);
             textView=itemView.findViewById(R.id.tv_weatherdata);
             itemView.setOnClickListener(this);
