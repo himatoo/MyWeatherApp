@@ -6,7 +6,17 @@
         android:summaryOff="hiden"
         android:summaryOn="shown"
         android:title="show bass">
-
     </CheckBoxPreference>
+    <EditTextPreference
+        android:defaultValue="Mountain View, CA 94043"
+        android:key="location"
+        android:title="location"></EditTextPreference>
+    <ListPreference
+        android:defaultValue="metric"
+        android:entries="@array/units"
+        android:entryValues="@array/units"
+        android:key="units"
+        android:title="Temp units"></ListPreference>
+
 
 </PreferenceScreen>

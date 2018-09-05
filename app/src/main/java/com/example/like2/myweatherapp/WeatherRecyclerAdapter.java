@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecyclerAdapter.WeatherView>{
@@ -38,6 +36,16 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<WeatherRecycler
 
     public interface ListitemclickListner {
         void onListitemclick(int index);
+    }
+
+    public void setData(List<WeatherDataModel> dataList) {
+        if (this.dataModels.size() > 0) {
+            notifyItemRangeRemoved(0, dataList.size());
+            this.dataModels.clear();
+        }
+        this.dataModels.addAll(dataList);
+        notifyItemRangeChanged(0, dataList.size());
+
     }
 
     class WeatherView extends RecyclerView.ViewHolder implements View.OnClickListener {
