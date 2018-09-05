@@ -4,8 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainLoader extends AsyncTaskLoader<List<WeatherDataModel>> {
@@ -29,9 +27,7 @@ public class MainLoader extends AsyncTaskLoader<List<WeatherDataModel>> {
         } else {
             forceLoad();
         }
-
     }
-
     @Override
     public void deliverResult(@Nullable List<WeatherDataModel> data) {
         list = data;

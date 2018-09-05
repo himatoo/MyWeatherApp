@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements WeatherRecyclerAd
     WeatherRecyclerAdapter adapter;
     RecyclerView recyclerView;
     private static final int loader_id = 1;
-    LoaderManager loaderManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +39,7 @@ public class MainActivity extends AppCompatActivity implements WeatherRecyclerAd
         recyclerView.setLayoutManager(ln);
         adapter = new WeatherRecyclerAdapter(new ArrayList<WeatherDataModel>(), this);
         recyclerView.setAdapter(adapter);
-
-        //loaderManager.initLoader(loader_id, null, this);
+        getSupportLoaderManager().initLoader(loader_id, null, this);
 
     }
 
@@ -60,15 +59,26 @@ public class MainActivity extends AppCompatActivity implements WeatherRecyclerAd
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        if (id == R.id.refresh_weatherdata) {
             progressBar.setVisibility(View.VISIBLE);
-            loaderManager = getSupportLoaderManager();
+            LoaderManager loaderManager = getSupportLoaderManager();
             Loader<List<WeatherDataModel>> loader = loaderManager.getLoader(loader_id);
-            if (loader == null) {
+            /*if (loader == null) {
                 loaderManager.initLoader(loader_id, null, this);
             } else {
+                //invalidateData();
+                loaderManager.restartLoader(loader_id, null, this);
+            }*/
+            if (loader != null) {
+                invalidateData();
                 loaderManager.restartLoader(loader_id, null, this);
             }
             return true;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -113,6 +123,11 @@ public class MainActivity extends AppCompatActivity implements WeatherRecyclerAd
        adapter.notifyDataSetChanged();*/
         Log.d("LOADERRR", "onLoaderReset");
 
+    }
+
+    private void invalidateData() {
+        adapter.dataModels.clear();
+        adapter.notifyDataSetChanged();
     }
 
    /* class networktask extends AsyncTask<Void, Void, List<WeatherDataModel>> {
